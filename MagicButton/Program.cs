@@ -1,14 +1,26 @@
-using Hangfire;
+
+using MagicButton.Data;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using System.Collections.ObjectModel;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentNullException("Connection String is missing!");
+builder.Services.AddDbContext<MagicDbContext>(opt => opt.UseSqlite($"Data Source={connectionString}"));
+
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddHttpClient("magic");
 
 var app = builder.Build();
+
+// Automatically create db file + apply migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<MagicDbContext>();
+    db.Database.Migrate(); // <-- auto migrate
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

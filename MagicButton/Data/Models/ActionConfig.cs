@@ -5,7 +5,7 @@
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid DeviceConfigId { get; set; }
-        public DeviceConfig DeviceConfig { get; set; } = default!;
+        public DeviceConfig? DeviceConfig { get; set; } = default!;
         public PressKind Kind { get; set; }
 
         // If null/empty, fall back to device defaults

@@ -3,8 +3,26 @@
 @{
     ViewData["Title"] = "Home page";
 }
+<h1 class="display-4">@ViewData["Title"]</h1>
+<hr/>
+@if (Model.isFirstRun)
+{
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+    <div class="text-center">
+     
+        <h4>Initial Setup</h4>
+        <p>Welcome to your new Magic Buton!</p>
+        <p class="border p-3 bg-light">
+            <a asp-page="/Device" class="btn btn-success btn-lg">Get Started</a>
+        </p>
+    </div>
+}
+else
+{
+    @await Html.PartialAsync("_NavTiles", new[]
+    {("API Action", "boxes", "/Action", "View system metrics"),
+    ("Settings", "gear-fill", "/Device", "Configure the button"),
+    ("Log File", "body-text", "/Logs", "Debug issues")})
+
+}

@@ -38,10 +38,7 @@ namespace MagicButton.Data
             cfg.HasKey(x => x.Id);
             cfg.HasIndex(x => x.DeviceId).IsUnique();
             cfg.Property(x => x.DeviceId).IsRequired().HasMaxLength(100);
-            cfg.Property(x => x.DefaultUrl).HasMaxLength(1000);
-            cfg.Property(x => x.DefaultHeaders).HasConversion(dictSS);
-            cfg.Property(x => x.DefaultExtraPayload).HasConversion(dictSO);
-            cfg.Property(x => x.QueuePath).HasMaxLength(1000);
+
             cfg.Property(x => x.CreatedAtUtc).HasDefaultValueSql("CURRENT_TIMESTAMP");
             cfg.Property(x => x.UpdatedAtUtc).HasDefaultValueSql("CURRENT_TIMESTAMP");
 

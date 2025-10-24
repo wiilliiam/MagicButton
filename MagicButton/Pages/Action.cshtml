@@ -1,0 +1,103 @@
+﻿@page
+@model MagicButton.Pages.ActionModel
+
+@{
+    var isNew = Model.ActionConfig == null || Model.ActionConfig.Id == Guid.Empty;
+    ViewData["Title"] = isNew ? "Create Action" : "Edit Action";
+}
+
+<h1><i class="bi bi-boxes"></i> API Action</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-light p-2">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">API Action</li>
+    </ol>
+</nav>
+<hr />
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="ActionConfig.Id" />
+
+            <div class="form-group">
+                <label asp-for="ActionConfig.DeviceConfigId" class="form-label"></label>
+                <select asp-for="ActionConfig.DeviceConfigId"
+                        class="form-select"
+                        asp-items="@((SelectList)ViewData["DeviceConfigId"])">
+                    <option value="">-- select device --</option>
+                </select>
+                <span asp-validation-for="ActionConfig.DeviceConfigId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                
+                <label asp-for="ActionConfig.Kind" class="control-label"></label>
+                <select asp-for="ActionConfig.Kind" class="form-select">
+                    <option value="Single">Single Press</option>
+                </select>
+                <span asp-validation-for="ActionConfig.Kind" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ActionConfig.Method" class="control-label"></label>
+                <select asp-for="ActionConfig.Method" class="form-control" >
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                </select>
+                <span asp-validation-for="ActionConfig.Method" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ActionConfig.Url" class="control-label"></label>
+                <input asp-for="ActionConfig.Url" class="form-control" />
+                <span asp-validation-for="ActionConfig.Url" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ActionConfig.Headers" class="control-label"></label>
+                <textarea asp-for="ActionConfig.Headers" class="form-control" ></textarea>
+                <span asp-validation-for="ActionConfig.Headers" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ActionConfig.ExtraPayload" class="control-label"></label>
+                <textarea asp-for="ActionConfig.ExtraPayload" class="form-control"></textarea>
+                <span asp-validation-for="ActionConfig.ExtraPayload" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ActionConfig.RetriesMaxAttempts" class="control-label"></label>
+                <input asp-for="ActionConfig.RetriesMaxAttempts" class="form-control" />
+                <span asp-validation-for="ActionConfig.RetriesMaxAttempts" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ActionConfig.RetriesBaseDelayMs" class="control-label"></label>
+                <input asp-for="ActionConfig.RetriesBaseDelayMs" class="form-control" />
+                <span asp-validation-for="ActionConfig.RetriesBaseDelayMs" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ActionConfig.RetriesJitter" class="control-label"></label>
+                <input asp-for="ActionConfig.RetriesJitter" class="form-control" />
+                <span asp-validation-for="ActionConfig.RetriesJitter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <button type="submit" class="btn btn-primary">
+                    @(isNew ? "Create" : "Save")
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

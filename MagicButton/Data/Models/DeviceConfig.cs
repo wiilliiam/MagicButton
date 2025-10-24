@@ -1,4 +1,6 @@
-﻿namespace MagicButton.Data.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MagicButton.Data.Models
 {
     public sealed class DeviceConfig
     {
@@ -12,16 +14,12 @@
         public int DoublePressWindowMs { get; set; } = 350;     // max gap for double
         public int LongPressThresholdMs { get; set; } = 700;    // hold >= long press
 
-        // Default request options (used if ActionConfig doesn't override)
-        public RequestMethod DefaultMethod { get; set; } = RequestMethod.POST;
-        public string DefaultUrl { get; set; } = "";            // optional
-        public Dictionary<string, string> DefaultHeaders { get; set; } = new();
-        public Dictionary<string, object> DefaultExtraPayload { get; set; } = new();
+
         public int RetriesMaxAttempts { get; set; } = 5;
         public int RetriesBaseDelayMs { get; set; } = 500;
-        public bool RetriesJitter { get; set; } = true;
-        public bool QueueEnabled { get; set; } = true;
-        public string QueuePath { get; set; } = "/var/lib/magicbutton/outbox.db";
+
+        [StringLength(50)]
+        public string? Password { get; set; }
 
         // Audit
         public DateTime CreatedAtUtc { get; set; } = DateTime.Now;

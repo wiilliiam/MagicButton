@@ -1,6 +1,7 @@
 
 using MagicButton.Data;
 using MagicButton.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text;
@@ -43,7 +44,7 @@ builder.Host.UseSerilog((ctx, lc) => lc
                   shared: true)
     .Enrich.FromLogContext());
 
-
+builder.Services.AddSingleton<IGpioService, GpioService>();
 var app = builder.Build();
 
 // Automatically create db file + apply migrations
@@ -60,7 +61,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-
+app.UseAntiforgery();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -97,7 +98,17 @@ app.MapGet("/logs/download", (IConfiguration cfg) =>
     return Results.File(path, "text/plain", "magicbutton.log");
 });
 
+app.MapPost("/gpio/on", ([FromForm]int pin, IGpioService gpio) =>
+{
+    gpio.Set(pin, true);
+    return Results.NoContent();
+});
 
+app.MapPost("/gpio/off", ([FromForm]int pin, IGpioService gpio) =>
+{
+    gpio.Set(pin, false);
+    return Results.NoContent();
+});
 
 
 app.Run();

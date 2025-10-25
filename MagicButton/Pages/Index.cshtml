@@ -3,12 +3,9 @@
 @{
     ViewData["Title"] = "Home page";
 }
-<h1 class="display-4">@ViewData["Title"]</h1>
-<hr/>
+
 @if (Model.isFirstRun)
 {
-
-
     <div class="text-center">
      
         <h4>Initial Setup</h4>
@@ -21,8 +18,9 @@
 else
 {
     @await Html.PartialAsync("_NavTiles", new[]
-    {("API Action", "boxes", "/Action", "View system metrics"),
+    {("API Action", "boxes", "/Action", "Configure the payload"),
     ("Settings", "gear-fill", "/Device", "Configure the button"),
+    ("LED Test", "lightbulb-fill", "/LEDs", "Test the LEDs"),
     ("Log File", "body-text", "/Logs", "Debug issues")})
 
 }

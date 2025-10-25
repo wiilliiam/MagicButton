@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /MagicButton/App_Data/magic.db-shm
 /MagicButton/App_Data/magic.db-wal
+/MagicButton/App_Data/magic.db

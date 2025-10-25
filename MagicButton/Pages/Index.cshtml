@@ -7,13 +7,25 @@
 @if (Model.isFirstRun)
 {
     <div class="text-center">
-     
+
         <h4>Initial Setup</h4>
         <p>Welcome to your new Magic Buton!</p>
-        <p class="border p-3 bg-light">
-            <a asp-page="/Device" class="btn btn-success btn-lg">Get Started</a>
-        </p>
+
+
     </div>
+
+
+    <p>To get started, please complete the following steps:</p>
+    <ol>
+        <li>Configure the <strong>Button</strong> settings</li>
+        <li>Map and configure <strong>LEDs</strong></li>
+        <li>Lastly, add your <strong>API Webhook</strong></li>
+    </ol>
+
+    <p class="border p-3 bg-light text-center">
+        <a asp-page="/Device" class="btn btn-success btn-lg">Get Started</a>
+    </p>
+
 }
 else
 {

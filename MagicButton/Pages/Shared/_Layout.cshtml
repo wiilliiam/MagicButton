@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using MagicButton.Data
+@using Microsoft.EntityFrameworkCore
+@inject MagicDbContext _dbContext;
+@{
+    var isNew = await _dbContext.DeviceConfigs.AnyAsync() == false;
+    
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,20 +33,23 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">           
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/Action"><i class="bi bi-boxes"></i> API Action</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/Device"><i class="bi bi-gear-fill"></i> Settings</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/LEDs"><i class="bi bi-lightbulb-fill"></i> LED Test</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/Logs"><i class="bi bi-body-text"></i> Log File</a>
-                        </li>
-                    </ul>
+                    @if (isNew == false)
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-page="/Action"><i class="bi bi-boxes"></i> API Action</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-page="/Device"><i class="bi bi-gear-fill"></i> Settings</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-page="/LEDs"><i class="bi bi-lightbulb-fill"></i> LED Test</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-page="/Logs"><i class="bi bi-body-text"></i> Log File</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>
@@ -52,7 +62,7 @@
 
     <footer class="border-top text-muted">
         <div class="container">
-            &copy; 2025 - MagicButton - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2025 - WT Robinson
         </div>
     </footer>
 

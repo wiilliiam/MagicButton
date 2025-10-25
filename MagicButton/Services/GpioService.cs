@@ -9,9 +9,24 @@ public interface IGpioService : IDisposable
 
 public sealed class GpioService : IGpioService
 {
-    private readonly GpioController _gpio = new();
+    private readonly GpioController _gpio;
     private readonly ConcurrentDictionary<int, byte> _opened = new(); // value unused; we just track
+    private readonly ILogger<GpioService> _logger;
+    public GpioService(ILogger<GpioService> logger)
+    {
 
+        _logger = logger;
+        try
+        {
+            _gpio = new();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to initialize GPIO controller. Are you running on a compatible platform with GPIO support?");
+        }
+
+        _logger = logger;
+    }
     public void EnsureOutput(int pin)
     {
         if (_opened.TryAdd(pin, 0))

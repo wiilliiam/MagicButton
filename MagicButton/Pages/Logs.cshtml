@@ -2,7 +2,7 @@
 @model MagicButton.Pages.LogsModel
 @{
 }
-<h1 ><i class="bi bi-body-text"></i> Log File</h1>
+<h1><i class="bi bi-body-text"></i> Log File</h1>
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb bg-light p-2">
@@ -12,16 +12,56 @@
 </nav>
 
 <div class="card shadow-sm">
-    <div class="card-body"
-         hx-get="/logs/tail?lines=500"
-         hx-trigger="load, every 2s"
-         hx-swap="innerHTML">
-        <em>Loading logs…</em>
+    <div class="log-wrapper">
+        <div id="log" class="log-container card-body"
+             hx-get="/logs/tail?lines=500"
+             hx-trigger="load, every 2s"
+             hx-swap="innerHTML">
+            <em>Loading logs…</em>
+        </div>
+
+
+        <div id="refresh-indicator" class="refresh-indicator">
+            <div class="spinner-border spinner-border-sm text-light" role="status"></div>
+        </div>
     </div>
 </div>
 
-@* <div class="mt-3">
-    <a class="btn btn-outline-secondary" href="/logs/download">Download full log</a>
-</div>
- *@
 <link rel="stylesheet" href="https://unpkg.com/htmx.org@1.9.12/dist/ext/class-tools.css">
+
+@section scripts {
+
+    <script>
+        const log = document.getElementById('log');
+        let autoScroll = true;
+        let scrollTimeout;
+
+        // 🧭 detect manual scrolling
+        log.addEventListener('scroll', () => {
+            const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 50;
+            autoScroll = nearBottom;
+        });
+
+        // 🌀 show indicator + smooth scroll if allowed
+        document.body.addEventListener('htmx:beforeRequest', (e) => {
+            if (e.target.id === 'log') {
+                document.getElementById('refresh-indicator')?.classList.add('active');
+            }
+        });
+
+        document.body.addEventListener('htmx:afterSwap', (e) => {
+            if (e.target.id === 'log') {
+                document.getElementById('refresh-indicator')?.classList.remove('active');
+                clearTimeout(scrollTimeout);
+                if (autoScroll) {
+                    // delay a wee bit to let HTMX render new content
+                    scrollTimeout = setTimeout(() => {
+                        log.scrollTo({ top: log.scrollHeight, behavior: 'smooth' });
+                    }, 100);
+                }
+            }
+        });
+
+
+    </script>
+}

@@ -25,8 +25,8 @@ namespace MagicButton.Pages
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
-
-            if (id == null)
+            var hasConfig = await _context.DeviceConfigs.AnyAsync();
+            if (id == null && !hasConfig)
             {
                 // CREATE mode
                 DeviceConfig = new DeviceConfig
@@ -38,7 +38,7 @@ namespace MagicButton.Pages
 
             // EDIT mode
 
-            var deviceconfig = await _context.DeviceConfigs.FirstOrDefaultAsync(m => m.Id == id);
+            var deviceconfig = await _context.DeviceConfigs.FirstOrDefaultAsync();
             DeviceConfig = deviceconfig;
             return Page();
         }

@@ -11,6 +11,32 @@ html {
   }
 }
 
+.log-container {
+    height: 720px; 
+    overflow-y: auto; /* enable scroll */
+    overflow-x: hidden;
+
+    background: #111;
+    color: #eee;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.log-wrapper {
+    position: relative;
+}
+
+.refresh-indicator {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+    .refresh-indicator.active {
+        opacity: 1;
+    }
 
 
 body {

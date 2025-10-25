@@ -2,7 +2,7 @@
 @model MagicButton.Pages.DeviceModel
 
 @{
-    var isNew = Model.DeviceConfig == null || Model.DeviceConfig.Id == Guid.Empty;
+    var isNew = Model.DeviceConfig.DeviceId == null;
     ViewData["Title"] = isNew ? "Create Device" : "Edit Device";
 }
 
@@ -14,87 +14,87 @@
     </ol>
 </nav>
 <hr />
+<p>
+    Configure the button device settings below. These settings control how the button behaves when pressed.
+    Some defaults have been provided to get you started. Next we will configure the LEDs and their behavior.
+</p>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-lg-6 col-xl-4 bg-light border p-3">
         <form method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DeviceConfig.Id" />
             <div class="form-group">
-                
-                <label asp-for="DeviceConfig.DeviceId" class="control-label">Name</label>
+
+                <label asp-for="DeviceConfig.DeviceId" class="control-label">Button name</label>
                 <input asp-for="DeviceConfig.DeviceId" class="form-control" />
                 <span asp-validation-for="DeviceConfig.DeviceId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                
-                <label asp-for="DeviceConfig.ButtonPin" class="control-label"></label>
+
+                <label asp-for="DeviceConfig.ButtonPin" class="control-label">Button pin</label>
                 <input asp-for="DeviceConfig.ButtonPin" class="form-control" />
                 <span asp-validation-for="DeviceConfig.ButtonPin" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="DeviceConfig.ButtonPullUp" /> @Html.DisplayNameFor(model => model.DeviceConfig.ButtonPullUp)
-                </label>
+            <div class="form-group py-3">
+
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="DeviceConfig.ButtonPullUp" />
+                    <label class="form-check-label">Button pull up? 
+
+                        <i class="bi bi-info-circle" data-bs-toggle="tooltip" 
+                           data-bs-placement="top"
+                           data-bs-custom-class="custom-tooltip"
+                           data-bs-title="Pull-up keeps the pin HIGH(3.3V) when not in use for stability. (Pull-down if the button is not using GND and already 3.3V)"></i>
+                    </label>
+                </div>
             </div>
             <div class="form-group">
-                
-                <label asp-for="DeviceConfig.DebounceMs" class="control-label"></label>
+
+                <label asp-for="DeviceConfig.DebounceMs" class="control-label">Debounce (ms)</label>
                 <input asp-for="DeviceConfig.DebounceMs" class="form-control" />
                 <span asp-validation-for="DeviceConfig.DebounceMs" class="text-danger"></span>
             </div>
             <div class="form-group">
-                
-                <label asp-for="DeviceConfig.DoublePressWindowMs" class="control-label"></label>
+
+                <label asp-for="DeviceConfig.DoublePressWindowMs" class="control-label">Double press window (ms)</label>
                 <input asp-for="DeviceConfig.DoublePressWindowMs" class="form-control" />
                 <span asp-validation-for="DeviceConfig.DoublePressWindowMs" class="text-danger"></span>
             </div>
             <div class="form-group">
-                
-                <label asp-for="DeviceConfig.LongPressThresholdMs" class="control-label"></label>
+
+                <label asp-for="DeviceConfig.LongPressThresholdMs" class="control-label">Long press theshold (ms)</label>
                 <input asp-for="DeviceConfig.LongPressThresholdMs" class="form-control" />
                 <span asp-validation-for="DeviceConfig.LongPressThresholdMs" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                
-                <label asp-for="DeviceConfig.RetriesMaxAttempts" class="control-label"></label>
+
+                <label asp-for="DeviceConfig.RetriesMaxAttempts" class="control-label">Max retries on failure</label>
                 <input asp-for="DeviceConfig.RetriesMaxAttempts" class="form-control" />
                 <span asp-validation-for="DeviceConfig.RetriesMaxAttempts" class="text-danger"></span>
             </div>
             <div class="form-group">
-                
-                <label asp-for="DeviceConfig.RetriesBaseDelayMs" class="control-label"></label>
+
+                <label asp-for="DeviceConfig.RetriesBaseDelayMs" class="control-label">Retry interval (ms)</label>
                 <input asp-for="DeviceConfig.RetriesBaseDelayMs" class="form-control" />
                 <span asp-validation-for="DeviceConfig.RetriesBaseDelayMs" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                
-                <label asp-for="DeviceConfig.CreatedAtUtc" class="control-label"></label>
-                <input asp-for="DeviceConfig.CreatedAtUtc" class="form-control" />
-                <span asp-validation-for="DeviceConfig.CreatedAtUtc" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                
-                <label asp-for="DeviceConfig.UpdatedAtUtc" class="control-label"></label>
-                <input asp-for="DeviceConfig.UpdatedAtUtc" class="form-control" />
-                <span asp-validation-for="DeviceConfig.UpdatedAtUtc" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">
-                    @(isNew ? "Create" : "Save")
+
+            <div class="border p-3 mt-3 text-end">
+                <button type="submit" class="btn btn-success">
+                    @(isNew ? "Continue to LED settings" : "Save changes")
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

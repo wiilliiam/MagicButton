@@ -1,19 +1,11 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using System.Collections.Generic;
 using System.Device;
 using System.Device.Gpio;
 using System.Device.Gpio.Drivers;
-using System.Device.I2c;
-using System.Device.Pwm;
 using System.Device.Spi;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using UnitsNet;
 
 namespace Iot.Device.Board
 {
@@ -129,7 +121,19 @@ namespace Iot.Device.Board
         /// <inheritdoc />
         protected override GpioDriver? TryCreateBestGpioDriver()
         {
-            return new RaspberryPi3Driver();
+            // Preferred on modern Raspberry Pi OS (Bookworm/Trixie):
+            try
+            {
+                // gpiochip0 is the 40-pin header on Pi boards
+                return new LibGpiodDriver(0);
+            }
+            catch
+            {
+                // Fallback: works on Pi 2/3/Zero 2 W if /dev/gpiomem is accessible
+                try { return new RaspberryPi3Driver(); } catch { /* continue */ }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -475,7 +479,6 @@ namespace Iot.Device.Board
                     case 27:
                         return RaspberryPi3Driver.AltMode.Alt5;
                 }
-
                 throw new NotSupportedException($"No SPI support on Pin {pinNumber}.");
             }
 
@@ -555,20 +558,13 @@ namespace Iot.Device.Board
         /// <param name="usage">The desired usage</param>
         protected override void ActivatePinMode(int pinNumber, PinUsage usage)
         {
-            if (_controller == null)
-            {
-                throw new InvalidOperationException("Board not initialized");
-            }
+            if (_controller == null) throw new InvalidOperationException("Board not initialized");
 
-            if (_raspberryPi3Driver == null || !_raspberryPi3Driver.AlternatePinModeSettingSupported)
+            if (_raspberryPi3Driver != null && _raspberryPi3Driver.AlternatePinModeSettingSupported)
             {
-                throw new NotSupportedException("Alternate pin mode setting not supported by driver");
-            }
-
-            var modeToSet = GetHardwareModeForPinUsage(pinNumber, usage);
-            if (modeToSet != RaspberryPi3Driver.AltMode.Unknown)
-            {
-                _raspberryPi3Driver.SetAlternatePinMode(pinNumber, modeToSet);
+                var modeToSet = GetHardwareModeForPinUsage(pinNumber, usage);
+                if (modeToSet != RaspberryPi3Driver.AltMode.Unknown)
+                    _raspberryPi3Driver.SetAlternatePinMode(pinNumber, modeToSet);
             }
 
             base.ActivatePinMode(pinNumber, usage);
@@ -593,38 +589,46 @@ namespace Iot.Device.Board
                 return cached;
             }
 
-            if (_raspberryPi3Driver == null || !_raspberryPi3Driver.AlternatePinModeSettingSupported)
-            {
-                throw new NotSupportedException("Alternate pin mode setting not supported by driver");
-            }
+            // If we're not using the Pi3 driver, we can’t query alternate modes
+            if (_raspberryPi3Driver == null)
+                return PinUsage.Gpio; // just treat it as plain GPIO
 
             var pinMode = _raspberryPi3Driver.GetAlternatePinMode(pinNumber);
-            if (pinMode == RaspberryPi3Driver.AltMode.Input || pinMode == RaspberryPi3Driver.AltMode.Output)
-            {
-                return PinUsage.Gpio;
-            }
 
-            // Do some heuristics: If the given pin number can be used for I2C with the same Alt mode, we can assume that's what it
-            // it set to.
-            var possibleAltMode = GetHardwareModeForPinUsage(pinNumber, PinUsage.I2c);
-            if (possibleAltMode == pinMode)
+            return pinMode switch
             {
-                return PinUsage.I2c;
-            }
+                RaspberryPi3Driver.AltMode.Alt0 => PinUsage.Spi,
+                RaspberryPi3Driver.AltMode.Alt1 => PinUsage.Uart,
+                RaspberryPi3Driver.AltMode.Alt2 => PinUsage.I2c,
+                _ => PinUsage.Gpio
+            };
 
-            possibleAltMode = GetHardwareModeForPinUsage(pinNumber, PinUsage.Spi);
-            if (possibleAltMode == pinMode)
-            {
-                return PinUsage.Spi;
-            }
+            //if (pinMode == RaspberryPi3Driver.AltMode.Input || pinMode == RaspberryPi3Driver.AltMode.Output)
+            //{
+            //    return PinUsage.Gpio;
+            //}
 
-            possibleAltMode = GetHardwareModeForPinUsage(pinNumber, PinUsage.Pwm);
-            if (possibleAltMode == pinMode)
-            {
-                return PinUsage.Pwm;
-            }
+            //// Do some heuristics: If the given pin number can be used for I2C with the same Alt mode, we can assume that's what it
+            //// it set to.
+            //var possibleAltMode = GetHardwareModeForPinUsage(pinNumber, PinUsage.I2c);
+            //if (possibleAltMode == pinMode)
+            //{
+            //    return PinUsage.I2c;
+            //}
 
-            return PinUsage.Unknown;
+            //possibleAltMode = GetHardwareModeForPinUsage(pinNumber, PinUsage.Spi);
+            //if (possibleAltMode == pinMode)
+            //{
+            //    return PinUsage.Spi;
+            //}
+
+            //possibleAltMode = GetHardwareModeForPinUsage(pinNumber, PinUsage.Pwm);
+            //if (possibleAltMode == pinMode)
+            //{
+            //    return PinUsage.Pwm;
+            //}
+
+            //return PinUsage.Unknown;
         }
 
         /// <summary>

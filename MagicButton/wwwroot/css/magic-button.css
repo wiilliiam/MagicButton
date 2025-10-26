@@ -3,19 +3,19 @@ html {
     font-family: "Roboto", sans-serif;
     position: relative;
     min-height: 100%;
+    background-color: #f8f9fa;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 18px;
-  }
+    html {
+        font-size: 18px;
+    }
 }
 
 .log-container {
-    height: 720px; 
+    height: 70vh;
     overflow-y: auto; /* enable scroll */
     overflow-x: hidden;
-
     background: #111;
     color: #eee;
     padding: 1rem;
@@ -43,6 +43,7 @@ body {
     margin-bottom: 60px;
     font-family: "Roboto", sans-serif;
 }
+
 .btn {
     font-family: "Roboto", sans-serif;
 }
@@ -53,4 +54,30 @@ footer {
     width: 100%;
     white-space: nowrap;
     line-height: 60px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.bg-smoke {
+    background-color: #f8f9fa;
+}
+
+.bg-secondary {
+    background-color: #f6f6f6 !important;
+}
+
+.bg-gray {
+    background-color: #e8e8e8;
+}
+
+
+.dropdown-menu .nav-link {
+    padding-left: 5px;
+    padding-right: 5px;
 }

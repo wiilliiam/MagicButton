@@ -1,0 +1,64 @@
+﻿@page
+@model MagicButton.Pages.LedModel
+
+@{
+    var isNew = Model.Led.Name == null;
+    ViewData["Title"] = isNew ? "Create LED" : "Edit LED";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<div class="row g-2">
+    <div class="col-lg-6 col-xl-4 bg-secondary border p-3">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Led.Id" />
+
+            <div class="form-group">
+                
+                <label asp-for="Led.Name" class="form-label"></label>
+                <input asp-for="Led.Name" class="form-control" placeholder="example: Success LED" />
+                <span asp-validation-for="Led.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="Led.Color" class="form-label"></label>
+                <select asp-for="Led.Color" class="form-control" asp-items="Model.LedColours">
+                    <option value="">-- Select Color --</option>
+                </select>
+                <span asp-validation-for="Led.Color" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="Led.Pin" class="form-label">GPIO Pin Number</label>
+                <input asp-for="Led.Pin" class="form-control" />
+                <span asp-validation-for="Led.Pin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <label asp-for="Led.DeviceConfigId" class="form-label">Button</label>
+                <select asp-for="Led.DeviceConfigId" class="form-control" asp-items="ViewBag.DeviceConfigId"></select>
+                <span asp-validation-for="Led.DeviceConfigId" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <input class="form-check-input" asp-for="Led.ActiveLow" /> 
+
+                <label class="form-check-label">Enable active low?</label>
+            </div>
+            <div class="border bg-gray p-3 mt-3 text-end">
+                <a asp-page="./Leds" class="btn btn-secondary">Back to list</a>
+
+                <button type="submit" class="btn btn-success">
+                    @(isNew ? "Create new LED" : "Save changes")
+                </button>
+            
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -29,10 +29,21 @@
 }
 else
 {
-    @await Html.PartialAsync("_NavTiles", new[]
-    {("API Action", "boxes", "/Action", "Configure the payload"),
-    ("Settings", "gear-fill", "/Device", "Configure the button"),
-    ("LED Test", "lightbulb-fill", "/LEDs", "Test the LEDs"),
-    ("Log File", "body-text", "/Logs", "Debug issues")})
-
+    <h4>Configure</h4>
+    @await Html.PartialAsync("_NavTiles", new[]{
+    ("API Action", "boxes", "/Action", "Configure the API Webhook action and payload", false, ""),
+    ("Button Settings", "hand-index-thumb", "/Device", "Configure the intervals and thesholds", false, ""),
+    ("LED Settings", "lightbulb", "/Leds", "Configure the response mappings", false, "")})
+    <hr />
+    <h4>Inspect</h4>
+    @await Html.PartialAsync("_NavTiles", new[]{
+    ("Action Log", "card-checklist", "/Presses", "View previous button presses", false, ""),
+    ("Diagnostics", "gear-wide-connected", "/Diagnostics", "Test the LEDs and your API config", false, ""),
+    ("System Log", "clipboard2-pulse", "/Logs", "View general system log", false, "")})
+    <hr />
+    <h4>Command</h4>
+    @await Html.PartialAsync("_NavTiles", new[]{
+    ("Factory Reset", "box-seam", "?handler=Command&action=reset", "Delete all data", true, "Are you sure?"),
+    ("Reboot", "recycle", "?handler=Command&action=reboot", "Restart the system", true, "Are you sure?"),
+    ("Shutdown", "door-closed", "?handler=Command&action=shutdown", "Controlled power off", true, "Are you sure?")})
 }

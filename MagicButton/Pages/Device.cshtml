@@ -8,7 +8,7 @@
 
 <h1><i class="bi bi-gear-fill"></i> Settings</h1>
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb bg-light p-2">
+    <ol class="breadcrumb bg-gray p-2">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item active" aria-current="page">Settings</li>
     </ol>
@@ -18,71 +18,77 @@
     Configure the button device settings below. These settings control how the button behaves when pressed.
     Some defaults have been provided to get you started. Next we will configure the LEDs and their behavior.
 </p>
-<div class="row">
-    <div class="col-lg-6 col-xl-4 bg-light border p-3">
+<div class="row g-2">
+    <div class="col-lg-6 col-xl-4 bg-secondary border p-3">
         <form method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DeviceConfig.Id" />
             <div class="form-group">
 
-                <label asp-for="DeviceConfig.DeviceId" class="control-label">Button name</label>
+                <label asp-for="DeviceConfig.DeviceId" class="form-label">Button name</label>
                 <input asp-for="DeviceConfig.DeviceId" class="form-control" />
                 <span asp-validation-for="DeviceConfig.DeviceId" class="text-danger"></span>
             </div>
             <div class="form-group">
 
-                <label asp-for="DeviceConfig.ButtonPin" class="control-label">Button pin</label>
-                <input asp-for="DeviceConfig.ButtonPin" class="form-control" />
+                <label asp-for="DeviceConfig.ButtonPin" class="form-label">Button pin</label>
+                <input asp-for="DeviceConfig.ButtonPin" class="form-control" min="1" max="40" />
                 <span asp-validation-for="DeviceConfig.ButtonPin" class="text-danger"></span>
             </div>
-            <div class="form-group py-3">
 
-                <div class="form-check">
-                    <input class="form-check-input" asp-for="DeviceConfig.ButtonPullUp" />
-                    <label class="form-check-label">Button pull up? 
+            <div class="form-group border-bottom">
+                <label asp-for="DeviceConfig.DebounceMs" class="form-label">Debounce interval</label>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   data-bs-custom-class="custom-tooltip"
+                   data-bs-title="The debounce interval tells the GPIO library to ignore any further state changes on that pin until the specified time has passed."></i>
 
-                        <i class="bi bi-info-circle" data-bs-toggle="tooltip" 
-                           data-bs-placement="top"
-                           data-bs-custom-class="custom-tooltip"
-                           data-bs-title="Pull-up keeps the pin HIGH(3.3V) when not in use for stability. (Pull-down if the button is not using GND and already 3.3V)"></i>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-
-                <label asp-for="DeviceConfig.DebounceMs" class="control-label">Debounce (ms)</label>
-                <input asp-for="DeviceConfig.DebounceMs" class="form-control" />
+                <input asp-for="DeviceConfig.DebounceMs" type="range" class="form-range" min="25" max="500"  step="25">
+                <output for="DeviceConfig_DebounceMs" id="debounceValue" aria-hidden="true"></output>
                 <span asp-validation-for="DeviceConfig.DebounceMs" class="text-danger"></span>
             </div>
-            <div class="form-group">
-
-                <label asp-for="DeviceConfig.DoublePressWindowMs" class="control-label">Double press window (ms)</label>
-                <input asp-for="DeviceConfig.DoublePressWindowMs" class="form-control" />
+            <div class="form-group border-bottom">
+                <label asp-for="DeviceConfig.DoublePressWindowMs" class="form-label">Double press window</label>
+                <input asp-for="DeviceConfig.DoublePressWindowMs" type="range" class="form-range" min="50" max="500" step="50">
+                <output for="DeviceConfig_DoublePressWindowMs" id="doublePressValue" aria-hidden="true"></output>
                 <span asp-validation-for="DeviceConfig.DoublePressWindowMs" class="text-danger"></span>
             </div>
-            <div class="form-group">
-
-                <label asp-for="DeviceConfig.LongPressThresholdMs" class="control-label">Long press theshold (ms)</label>
-                <input asp-for="DeviceConfig.LongPressThresholdMs" class="form-control" />
+            <div class="form-group border-bottom">
+                <label asp-for="DeviceConfig.LongPressThresholdMs" class="form-label">Long press theshold</label>
+                <input asp-for="DeviceConfig.LongPressThresholdMs" type="range" class="form-range" min="500" max="5000" step="250">
+                <output for="DeviceConfig_LongPressThresholdMs" id="longPressValue" aria-hidden="true"></output>
                 <span asp-validation-for="DeviceConfig.LongPressThresholdMs" class="text-danger"></span>
             </div>
 
             <div class="form-group">
 
-                <label asp-for="DeviceConfig.RetriesMaxAttempts" class="control-label">Max retries on failure</label>
+                <label asp-for="DeviceConfig.RetriesMaxAttempts" class="form-label">Max retries on failure</label>
                 <input asp-for="DeviceConfig.RetriesMaxAttempts" class="form-control" />
                 <span asp-validation-for="DeviceConfig.RetriesMaxAttempts" class="text-danger"></span>
             </div>
             <div class="form-group">
-
-                <label asp-for="DeviceConfig.RetriesBaseDelayMs" class="control-label">Retry interval (ms)</label>
-                <input asp-for="DeviceConfig.RetriesBaseDelayMs" class="form-control" />
+                <label asp-for="DeviceConfig.RetriesBaseDelayMs" class="form-label">Retry interval</label>
+                <input asp-for="DeviceConfig.RetriesBaseDelayMs" type="range" class="form-range" min="500" max="5000" step="500">
+                <output for="DeviceConfig_RetriesBaseDelayMs" id="retriesValue" aria-hidden="true"></output>
                 <span asp-validation-for="DeviceConfig.RetriesBaseDelayMs" class="text-danger"></span>
             </div>
 
+            <div class="form-group py-3 border-bottom">
 
-            <div class="border p-3 mt-3 text-end">
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="DeviceConfig.ButtonPullUp" />
+                    <label class="form-check-label">
+                        Enable pull up?
+
+                        <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                           data-bs-placement="top"
+                           data-bs-custom-class="custom-tooltip"
+                           data-bs-title="Pull-up keeps the pin HIGH(3.3V) when not in use for stability. (Uncheck for Pull-down if the button is not using GND and already 3.3V)"></i>
+                    </label>
+                </div>
+            </div>
+            <div class="border bg-gray p-3 mt-3 text-end">
                 <button type="submit" class="btn btn-success">
                     @(isNew ? "Continue to LED settings" : "Save changes")
                 </button>
@@ -96,5 +102,70 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+        <script>
+
+
+            const longPressInput = document.getElementById('DeviceConfig_LongPressThresholdMs');
+            const longPressOutput = document.getElementById('longPressValue');
+            SetInitialValue(longPressOutput, longPressInput);
+
+            longPressInput.addEventListener('input', function() {
+              longPressOutput.textContent = (this.value / 1000) + ' seconds';
+            });
+
+            longPressInput.dispatchEvent(new Event('input'));
+
+
+
+            const debounceInput = document.getElementById('DeviceConfig_DebounceMs');
+            const debounceOutput = document.getElementById('debounceValue');
+            SetInitialValue(debounceOutput, debounceInput);
+
+
+            debounceInput.addEventListener('input', function() {
+              debounceOutput.textContent = this.value + ' milliseconds';
+            });
+
+            debounceInput.dispatchEvent(new Event('input'));
+
+
+
+            const doublePressInput = document.getElementById('DeviceConfig_DoublePressWindowMs');
+            const doublePressOutput = document.getElementById('doublePressValue');
+            SetInitialValue(doublePressOutput, doublePressInput);
+
+
+            doublePressInput.addEventListener('input', function() {
+              doublePressOutput.textContent = this.value + ' milliseconds';
+            });
+
+            doublePressInput.dispatchEvent(new Event('input'));
+
+
+
+
+            const retriesInput = document.getElementById('DeviceConfig_RetriesBaseDelayMs');
+            const retriesOutput = document.getElementById('retriesValue');
+            SetInitialValue(retriesOutput, retriesInput);
+
+
+            retriesInput.addEventListener('input', function() {
+              retriesOutput.textContent = (this.value / 1000) + ' seconds';
+            });
+
+            retriesInput.dispatchEvent(new Event('input'));
+
+
+            // Functions
+
+            function SetInitialValue(output, input){
+
+
+                output.textContent = input.value;
+            }
+
+        </script>
     }
 }

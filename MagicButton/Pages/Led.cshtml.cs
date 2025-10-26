@@ -11,25 +11,26 @@ using MagicButton.Data.Models;
 
 namespace MagicButton.Pages
 {
-    public class DeviceModel : PageModel
+    public class LedModel : PageModel
     {
         private readonly MagicButton.Data.MagicDbContext _context;
 
-        public DeviceModel(MagicButton.Data.MagicDbContext context)
+        public LedModel(MagicButton.Data.MagicDbContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public DeviceConfig DeviceConfig { get; set; } = default!;
-
+        public Led Led { get; set; } = default!;
+        public SelectList LedColours { get; set; }
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
-            var hasConfig = await _context.DeviceConfigs.AnyAsync();
-            if (id == null && !hasConfig)
+            ViewData["DeviceConfigId"] = new SelectList(_context.DeviceConfigs, "Id", "DeviceId");
+            LedColours = new SelectList(Enum.GetValues(typeof(LedColor)).Cast<LedColor>());
+            if (id == null)
             {
                 // CREATE mode
-                DeviceConfig = new DeviceConfig
+                Led = new Led
                 {
                     // set any sensible defaults here if you want
                 };
@@ -38,8 +39,10 @@ namespace MagicButton.Pages
 
             // EDIT mode
 
-            var deviceconfig = await _context.DeviceConfigs.FirstOrDefaultAsync();
-            DeviceConfig = deviceconfig;
+            var led = await _context.Leds.FirstOrDefaultAsync();
+            Led = led;
+
+            
             return Page();
         }
 
@@ -51,18 +54,17 @@ namespace MagicButton.Pages
             {
                 return Page();
             }
-
-            var isNew = DeviceConfig.Id == Guid.Empty || !DeviceConfigExists(DeviceConfig.Id);
+            var isNew = Led.Id == Guid.Empty || !LedExists(Led.Id);
             if (isNew)
             {
-                if (DeviceConfig.Id == Guid.Empty)
-                    DeviceConfig.Id = Guid.NewGuid();
+                if (Led.Id == Guid.Empty)
+                    Led.Id = Guid.NewGuid();
 
-                _context.DeviceConfigs.Add(DeviceConfig);
+                _context.Leds.Add(Led);
             }
             else
             {
-                _context.Attach(DeviceConfig).State = EntityState.Modified;
+                _context.Attach(Led).State = EntityState.Modified;
             }
             try
             {
@@ -70,7 +72,7 @@ namespace MagicButton.Pages
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DeviceConfigExists(DeviceConfig.Id))
+                if (!LedExists(Led.Id))
                 {
                     return NotFound();
                 }
@@ -79,15 +81,19 @@ namespace MagicButton.Pages
                     throw;
                 }
             }
-            if(isNew)
+
+            if (isNew)
+            {
+                TempData["SuccessMessage"] = "LED created successfully. Would you like to add another one just now?";
                 return RedirectToPage("./Led");
+            }
 
             return RedirectToPage("./Index");
         }
 
-        private bool DeviceConfigExists(Guid id)
+        private bool LedExists(Guid id)
         {
-            return _context.DeviceConfigs.Any(e => e.Id == id);
+            return _context.Leds.Any(e => e.Id == id);
         }
     }
 }

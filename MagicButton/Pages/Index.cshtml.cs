@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Device.Gpio;
+using System.Diagnostics;
 namespace MagicButton.Pages
 {
     public class IndexModel : PageModel
@@ -24,32 +25,60 @@ namespace MagicButton.Pages
             isFirstRun = await _context.DeviceConfigs.AnyAsync() == false;
         }
 
-
-        public static async Task LetsParty()
+        public async Task OnGetCommandAsync(string action)
         {
 
-            // choose your numbering scheme & pins
-            var cfg = new PiIo.PiGpioServiceConfig
+            switch (action)
             {
-                Numbering = PinNumberingScheme.Logical,   // or Board if you prefer
-                RedLedPin = 27,
-                AmberLedPin = 22,
-                GreenLedPin = 17,
-                ActiveBuzzerPin = 5,
-                ButtonPin = 6,
-                ButtonPullUp = true,                      // button to GND
-                Debounce = TimeSpan.FromMilliseconds(40),
-                ButtonEffectDuration = TimeSpan.FromSeconds(10),
-                BuzzerOn = TimeSpan.FromMilliseconds(200),
-                BuzzerOff = TimeSpan.FromMilliseconds(200)
-            };
+                case "reboot":
+                    {
+                        _ = RunSudoAsync("reboot");
+                        _logger.LogWarning("System reboot initiated via web command.");
+                        break;
+                    }
+                case "shutdown":
+                    {
+                        _ = RunSudoAsync("shutdown", "-h", "now");
+                        _logger.LogWarning("System shutdown initiated via web command.");
+                        break;
+                    }
+                case "reset":
+                    {
+                        // Delete and recreate the database
+                        try
+                        {
+                            await _context.Database.EnsureDeletedAsync();
+                            await _context.Database.MigrateAsync();
+                            _logger.LogWarning("Database reset initiated via web command.");
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Error during database reset via web command.");
+                        }
+                        break;
+                    }
+                default:
+                    break;
+            }
 
-            using var svc = new PiIo.PiGpioService(cfg);
-            svc.Start();
-
-            var ledTask = svc.LedDanceAsync(TimeSpan.FromSeconds(30));
-            var buzzerTask = svc.PlayBuzzerAsync(TimeSpan.FromSeconds(3), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100));
-            await Task.WhenAll(ledTask, buzzerTask);
         }
+
+        private static Task RunSudoAsync(string command, params string[] args)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "sudo",
+                ArgumentList = { command },
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
+            };
+            foreach (var a in args) psi.ArgumentList.Add(a);
+
+            var p = new Process { StartInfo = psi, EnableRaisingEvents = false };
+            p.Start();
+            return Task.CompletedTask;
+        }
+
     }
 }

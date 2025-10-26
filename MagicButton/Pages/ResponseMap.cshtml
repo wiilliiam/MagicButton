@@ -1,0 +1,78 @@
+﻿@page
+@model MagicButton.Pages.ResponseMapModel
+
+@{
+    ViewData["Title"] = "ResponseMap";
+}
+
+<h1>ResponseMap</h1>
+
+<h4>ResponseMapping</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ResponseMapping.Id" />
+            <div class="form-group">
+                
+                <label asp-for="ResponseMapping.DeviceConfigId" class="form-label"></label>
+                <select asp-for="ResponseMapping.DeviceConfigId" class="form-control" asp-items="ViewBag.DeviceConfigId"></select>
+                <span asp-validation-for="ResponseMapping.DeviceConfigId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ResponseMapping.LedId" class="form-label"></label>
+                <select asp-for="ResponseMapping.LedId" class="form-control" asp-items="ViewBag.LedId"></select>
+                <span asp-validation-for="ResponseMapping.LedId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ResponseMapping.CodeStart" class="form-label"></label>
+                <input asp-for="ResponseMapping.CodeStart" class="form-control" />
+                <span asp-validation-for="ResponseMapping.CodeStart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ResponseMapping.CodeEnd" class="form-label"></label>
+                <input asp-for="ResponseMapping.CodeEnd" class="form-control" />
+                <span asp-validation-for="ResponseMapping.CodeEnd" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ResponseMapping.TransportError" /> @Html.DisplayNameFor(model => model.ResponseMapping.TransportError)
+                </label>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ResponseMapping.Pattern" class="form-label"></label>
+                <select asp-for="ResponseMapping.Pattern" class="form-control"></select>
+                <span asp-validation-for="ResponseMapping.Pattern" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ResponseMapping.DurationMs" class="form-label"></label>
+                <input asp-for="ResponseMapping.DurationMs" class="form-control" />
+                <span asp-validation-for="ResponseMapping.DurationMs" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                <label asp-for="ResponseMapping.Priority" class="form-label"></label>
+                <input asp-for="ResponseMapping.Priority" class="form-control" />
+                <span asp-validation-for="ResponseMapping.Priority" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

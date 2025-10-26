@@ -51,8 +51,14 @@ namespace MagicButton.Services
             // You can change how you pick the active device row (e.g., by DeviceId env var)
             var device = await db.DeviceConfigs
                 .Include(d => d.Actions)
-                .FirstOrDefaultAsync(ct)
-                ?? throw new InvalidOperationException("No DeviceConfig found.");
+                .FirstOrDefaultAsync(ct);
+
+            if (device == null) { 
+                await Task.Delay(1000, ct); 
+                _logger.LogWarning("No DeviceConfig found in database. Waiting...");
+                return;
+
+            }
 
             var pin = device.ButtonPin;
             var pullUp = device.ButtonPullUp;

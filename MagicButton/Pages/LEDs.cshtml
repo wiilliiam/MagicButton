@@ -1,104 +1,60 @@
 ﻿@page
-@model MagicButton.Pages.LEDsModel
+@model MagicButton.Pages.LedsModel
+
 @{
+    ViewData["Title"] = "Leds";
 }
-<h1><i class="bi bi-lightbulb-fill"></i> LED Test</h1>
-<hr/>
-@Html.AntiForgeryToken()
-<div class="container py-4">
-    <h5 class="mb-3">LED Test (press & hold)</h5>
-    <p>or hold Shift+R/G/A</p>
-    <!-- Example: Green on GPIO pin 17 -->
-    <button class="btn btn-success btn-lg me-2"
-            data-pin="17"
-            hx-post="/gpio/on"
-            hx-vals='js:{"pin": this.dataset.pin}'
-            hx-trigger="mousedown, touchstart"
-            hx-target="this"
-            hx-swap="none"
-            hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            title="Shift+G to toggle while held">
-        Green (pin 17)
-    </button>
 
-    <!-- Amber on pin 22 -->
-    <button class="btn btn-warning btn-lg me-2"
-            data-pin="22"
-            hx-post="/gpio/on"
-            hx-vals='js:{"pin": this.dataset.pin}'
-            hx-trigger="mousedown, touchstart"
-            hx-target="this"
-            hx-swap="none"
-            hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            title="Shift+A to toggle while held">
-        Amber (pin 22)
-    </button>
+<h1>Leds</h1>
 
-    <!-- Red on pin 27 -->
-    <button class="btn btn-danger btn-lg"
-            data-pin="27"
-            hx-post="/gpio/on"
-            hx-vals='js:{"pin": this.dataset.pin}'
-            hx-trigger="mousedown, touchstart"
-            hx-target="this"
-            hx-swap="none"
-            hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            title="Shift+R to toggle while held">
-        Red (pin 27)
-    </button>
-</div>
-
-
-@section Scripts {
-
-    <script>
-        // Avoid spamming repeated keydown while held
-        const activeKeys = new Set();
-
-        const map = [
-          { match: e => e.shiftKey && e.code === 'KeyG', pin: 17 },
-          { match: e => e.shiftKey && e.code === 'KeyA', pin: 22 },
-          { match: e => e.shiftKey && e.code === 'KeyR', pin: 27 },
-        ];
-
-        document.addEventListener('keydown', e => {
-          const m = map.find(x => x.match(e));
-          if (!m) return;
-
-          const keySig = `${e.code}+shift`;
-          if (activeKeys.has(keySig)) return; // already ON
-          activeKeys.add(keySig);
-
-          htmx.ajax('POST', '/gpio/on', { values: { pin: m.pin } });
-        });
-
-        document.addEventListener('keyup', e => {
-          const m = map.find(x => x.match(e));
-          if (!m) return;
-
-          const keySig = `${e.code}+shift`;
-          if (!activeKeys.has(keySig)) return;
-          activeKeys.delete(keySig);
-
-          htmx.ajax('POST', '/gpio/off', { values: { pin: m.pin } });
-        });
-
-        // Safety: turn everything off when page unloads
-        window.addEventListener('blur', () => {
-          activeKeys.forEach(sig => {
-            const code = sig.split('+')[0];
-            const m = map.find(x => `Key${x.pin === 17 ? 'G' : x.pin === 22 ? 'A' : 'R'}` === code);
-            if (m) htmx.ajax('POST', '/gpio/off', { values: { pin: m.pin } });
-          });
-          activeKeys.clear();
-        });
-    </script>
-
-
+<p>
+    <a asp-page="Led">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Led[0].DeviceConfig)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Led[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Led[0].Color)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Led[0].Pin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Led[0].ActiveLow)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Led) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeviceConfig.DeviceId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActiveLow)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
 }
+    </tbody>
+</table>

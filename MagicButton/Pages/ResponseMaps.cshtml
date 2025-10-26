@@ -1,0 +1,78 @@
+﻿@page
+@model MagicButton.Pages.ResponseMapsModel
+
+@{
+    ViewData["Title"] = "ResponseMaps";
+}
+
+<h1>ResponseMaps</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseMapping[0].DeviceConfig)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseMapping[0].Led)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseMapping[0].CodeStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseMapping[0].CodeEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseMapping[0].TransportError)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseMapping[0].Pattern)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseMapping[0].DurationMs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseMapping[0].Priority)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ResponseMapping) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeviceConfig.DeviceId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Led.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CodeStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CodeEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransportError)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pattern)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DurationMs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

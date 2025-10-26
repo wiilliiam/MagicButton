@@ -1,1 +1,1 @@
-﻿
+﻿## Your local data and log files are stored in this App_Data directory.

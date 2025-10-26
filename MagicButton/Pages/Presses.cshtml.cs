@@ -10,21 +10,23 @@ using MagicButton.Data.Models;
 
 namespace MagicButton.Pages
 {
-    public class LedsModel : PageModel
+    public class PressesModel : PageModel
     {
         private readonly MagicButton.Data.MagicDbContext _context;
 
-        public LedsModel(MagicButton.Data.MagicDbContext context)
+        public PressesModel(MagicButton.Data.MagicDbContext context)
         {
             _context = context;
         }
 
-        public IList<Led> Led { get;set; } = default!;
+        public IList<ButtonPress> ButtonPress { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            Led = await _context.Leds
-                .Include(l => l.DeviceConfig).ToListAsync();
+            ButtonPress = await _context.ButtonPresses
+                .Include(b => b.ActionConfig)
+                .Include(b => b.DeviceConfig)
+                .Include(b => b.Led).ToListAsync();
         }
     }
 }

@@ -1,0 +1,144 @@
+﻿@page
+@model MagicButton.Pages.PressesModel
+
+@{
+    ViewData["Title"] = "Presses";
+}
+
+<h1>Presses</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].DeviceConfig)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].ActionConfig)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].DeviceId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].Kind)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].PressedAtUtc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].Simulated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].PayloadJson)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].AttemptCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].Queued)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].Success)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].ResponseStatusCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].TransportError)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].DurationMs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].Led)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].LedPattern)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].LedDurationMs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].ResponseBodySnippet)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].Error)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ButtonPress[0].CreatedAtUtc)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ButtonPress) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeviceConfig.DeviceId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActionConfig.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeviceId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Kind)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PressedAtUtc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Simulated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PayloadJson)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AttemptCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Queued)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Success)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ResponseStatusCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransportError)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DurationMs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Led.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LedPattern)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LedDurationMs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ResponseBodySnippet)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Error)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAtUtc)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

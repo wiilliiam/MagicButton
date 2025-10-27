@@ -54,8 +54,8 @@ namespace MagicButton.Services
                 .FirstOrDefaultAsync(ct);
 
             if (device == null) { 
-                await Task.Delay(1000, ct); 
-                _logger.LogWarning("No DeviceConfig found in database. Waiting...");
+                await Task.Delay(TimeSpan.FromMinutes(1), ct); 
+                _logger.LogWarning("Database is empty. Waiting for data...");
                 return;
 
             }

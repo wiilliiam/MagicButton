@@ -26,7 +26,13 @@ namespace MagicButton.Pages
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
             ViewData["DeviceConfigId"] = new SelectList(_context.DeviceConfigs, "Id", "DeviceId");
-            LedColours = new SelectList(Enum.GetValues(typeof(LedColor)).Cast<LedColor>());
+
+            var allColours = Enum.GetValues(typeof(LedColor)).Cast<LedColor>().ToList();   
+
+
+            LedColours = new SelectList(allColours);
+
+
             if (id == null)
             {
                 // CREATE mode
@@ -34,12 +40,20 @@ namespace MagicButton.Pages
                 {
                     // set any sensible defaults here if you want
                 };
+
+                var exitingColours = await _context.Leds.Select(x => x.Color).ToListAsync();
+
+                foreach (var colour in exitingColours)
+                {
+                    allColours.Remove(colour);
+                }
+
                 return Page();
             }
 
             // EDIT mode
 
-            var led = await _context.Leds.FirstOrDefaultAsync();
+            var led = await _context.Leds.FindAsync(id);
             Led = led;
 
             
@@ -50,8 +64,15 @@ namespace MagicButton.Pages
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            ViewData["DeviceConfigId"] = new SelectList(_context.DeviceConfigs, "Id", "DeviceId");
+
+            var allColours = Enum.GetValues(typeof(LedColor)).Cast<LedColor>().ToList();
+
+
+
             if (!ModelState.IsValid)
             {
+                LedColours = new SelectList(allColours);
                 return Page();
             }
             var isNew = Led.Id == Guid.Empty || !LedExists(Led.Id);
@@ -59,6 +80,17 @@ namespace MagicButton.Pages
             {
                 if (Led.Id == Guid.Empty)
                     Led.Id = Guid.NewGuid();
+
+                var existingPins = await _context.Leds.Select(x => x.Pin).ToListAsync();
+
+                if (existingPins.Any(x => x == Led.Pin))
+                {
+                    // Duplicate pin
+                    TempData["ErrorMessage"] = "Sorry but that GPIO Pin has already been added.";
+                    LedColours = new SelectList(allColours);
+                    return Page();
+                }
+
 
                 _context.Leds.Add(Led);
             }
@@ -85,6 +117,7 @@ namespace MagicButton.Pages
             if (isNew)
             {
                 TempData["SuccessMessage"] = "LED created successfully. Would you like to add another one just now?";
+                LedColours = new SelectList(allColours);
                 return RedirectToPage("./Led");
             }
 

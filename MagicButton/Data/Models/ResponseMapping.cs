@@ -1,6 +1,7 @@
 ﻿namespace MagicButton.Data.Models
 {
     // Map HTTP response codes (or ranges / transport errors) to a LED + pattern
+    // Not yet implemented!
     public sealed class ResponseMapping
     {
         public long Id { get; set; }

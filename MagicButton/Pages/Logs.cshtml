@@ -1,13 +1,14 @@
 ﻿@page
 @model MagicButton.Pages.LogsModel
 @{
+    ViewData["Title"] = "System Log";
 }
-<h1><i class="bi bi-body-text"></i> Log File</h1>
+<h1><i class="bi bi-clipboard2-pulse"></i> @ViewData["Title"]</h1>
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb bg-light p-2">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Log File</li>
+        <li class="breadcrumb-item active" aria-current="page">System Log</li>
     </ol>
 </nav>
 

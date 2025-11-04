@@ -10,7 +10,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb bg-gray p-2">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Settings</li>
+        <li class="breadcrumb-item active" aria-current="page">Button Settings</li>
     </ol>
 </nav>
 <hr />
@@ -26,13 +26,13 @@
             <input type="hidden" asp-for="DeviceConfig.Id" />
             <div class="form-group">
 
-                <label asp-for="DeviceConfig.DeviceId" class="form-label">Button name</label>
+                <label asp-for="DeviceConfig.DeviceId" class="form-label">Friendly Name</label>
                 <input asp-for="DeviceConfig.DeviceId" class="form-control" />
                 <span asp-validation-for="DeviceConfig.DeviceId" class="text-danger"></span>
             </div>
             <div class="form-group">
 
-                <label asp-for="DeviceConfig.ButtonPin" class="form-label">Button pin</label>
+                <label asp-for="DeviceConfig.ButtonPin" class="form-label">GPIO Pin</label>
                 <input asp-for="DeviceConfig.ButtonPin" class="form-control" min="1" max="40" />
                 <span asp-validation-for="DeviceConfig.ButtonPin" class="text-danger"></span>
             </div>

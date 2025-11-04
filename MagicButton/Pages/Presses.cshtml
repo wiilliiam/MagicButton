@@ -2,11 +2,17 @@
 @model MagicButton.Pages.PressesModel
 
 @{
-    ViewData["Title"] = "Presses";
+    ViewData["Title"] = "Action Log";
 }
 
-<h1>Presses</h1>
-
+<h1><i class="bi bi-boxes"></i> @ViewData["Title"]</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-gray p-2">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Action Log</li>
+    </ol>
+</nav>
+<hr />
 <p>
     <a asp-page="Create">Create New</a>
 </p>

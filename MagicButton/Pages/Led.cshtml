@@ -6,30 +6,36 @@
     ViewData["Title"] = isNew ? "Create LED" : "Edit LED";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1><i class="bi bi-boxes"></i> @ViewData["Title"]</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-gray p-2">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">LED Settings</li>
+    </ol>
+</nav>
 <hr />
 <div class="row g-2">
     <div class="col-lg-6 col-xl-4 bg-secondary border p-3">
         <form method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Led.Id" />
+            <div class="form-group">
 
-            <div class="form-group">
-                
-                <label asp-for="Led.Name" class="form-label"></label>
-                <input asp-for="Led.Name" class="form-control" placeholder="example: Success LED" />
-                <span asp-validation-for="Led.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                
-                <label asp-for="Led.Color" class="form-label"></label>
+                <label asp-for="Led.Color" class="form-label">LED Colour</label>
                 <select asp-for="Led.Color" class="form-control" asp-items="Model.LedColours">
                     <option value="">-- Select Color --</option>
                 </select>
                 <span asp-validation-for="Led.Color" class="text-danger"></span>
             </div>
             <div class="form-group">
-                
+
+                <label asp-for="Led.Name" class="form-label">Friendly Name</label>
+                <input asp-for="Led.Name" class="form-control" placeholder="example: Success LED" />
+                <span asp-validation-for="Led.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+
                 <label asp-for="Led.Pin" class="form-label">GPIO Pin Number</label>
                 <input asp-for="Led.Pin" class="form-control" />
                 <span asp-validation-for="Led.Pin" class="text-danger"></span>
@@ -41,7 +47,7 @@
                 <span asp-validation-for="Led.DeviceConfigId" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
-                <input class="form-check-input" asp-for="Led.ActiveLow" /> 
+                <input class="form-check-input" asp-for="Led.ActiveLow" />
 
                 <label class="form-check-label">Enable active low?</label>
             </div>
@@ -51,7 +57,7 @@
                 <button type="submit" class="btn btn-success">
                     @(isNew ? "Create new LED" : "Save changes")
                 </button>
-            
+
             </div>
         </form>
     </div>
@@ -60,5 +66,7 @@
 
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

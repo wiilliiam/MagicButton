@@ -1,70 +1,78 @@
 ﻿@page
 @model MagicButton.Pages.DiagnosticsModel
 @{
+    ViewData["Title"] = "Diagnostics";
 }
-<h1><i class="bi bi-lightbulb-fill"></i> LED Test</h1>
-<hr/>
+<h1><i class="bi bi-boxes"></i> @ViewData["Title"]</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-gray p-2">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Diagnostics</li>
+    </ol>
+</nav>
+<hr />
 @Html.AntiForgeryToken()
 <div class="container py-4">
-    <h5 class="mb-3">LED Test (press & hold)</h5>
-    <p>or hold Shift+R/G/A</p>
-    <!-- Example: Green on GPIO pin 17 -->
-    <button class="btn btn-success btn-lg me-2"
-            data-pin="17"
-            hx-post="/gpio/on"
-            hx-vals='js:{"pin": this.dataset.pin}'
-            hx-trigger="mousedown, touchstart"
-            hx-target="this"
-            hx-swap="none"
-            hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            title="Shift+G to toggle while held">
-        Green (pin 17)
-    </button>
 
-    <!-- Amber on pin 22 -->
-    <button class="btn btn-warning btn-lg me-2"
-            data-pin="22"
-            hx-post="/gpio/on"
-            hx-vals='js:{"pin": this.dataset.pin}'
-            hx-trigger="mousedown, touchstart"
-            hx-target="this"
-            hx-swap="none"
-            hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            title="Shift+A to toggle while held">
-        Amber (pin 22)
-    </button>
+    @if (Model.GreenPin != 0 || Model.RedPin != 0)
+    {
+        <div class="border rounded p-3">
+            <h5 class="mb-3">LED Test</h5>
+            <p>
+                Here you can test your LEDs are wired and working as expected.
+                The buttons are momentary and need to be held down you can also use the keyboard: 
+                <strong><code>Shift</code> <code>+</code> <code>R/G</code></strong>
+            </p>
 
-    <!-- Red on pin 27 -->
-    <button class="btn btn-danger btn-lg"
-            data-pin="27"
-            hx-post="/gpio/on"
-            hx-vals='js:{"pin": this.dataset.pin}'
-            hx-trigger="mousedown, touchstart"
-            hx-target="this"
-            hx-swap="none"
-            hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-            title="Shift+R to toggle while held">
-        Red (pin 27)
-    </button>
+            <button class="btn btn-success btn-lg me-2"
+                    data-pin="@Model.GreenPin"
+                    hx-post="/gpio/on"
+                    hx-vals='js:{"pin": this.dataset.pin}'
+                    hx-trigger="mousedown, touchstart"
+                    hx-target="this"
+                    hx-swap="none"
+                    hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                    hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                    hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                    title="Shift+G to toggle while held">
+                💡 Green (pin @Model.GreenPin)
+            </button>
+
+            <!-- Red on pin 27 -->
+            <button class="btn btn-danger btn-lg"
+                    data-pin="@Model.RedPin"
+                    hx-post="/gpio/on"
+                    hx-vals='js:{"pin": this.dataset.pin}'
+                    hx-trigger="mousedown, touchstart"
+                    hx-target="this"
+                    hx-swap="none"
+                    hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                    hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                    hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                    title="Shift+R to toggle while held">
+                💡 Red (pin @Model.RedPin)
+            </button>
+        </div>
+    }
 </div>
+@if (Model.GreenPin != 0 || Model.RedPin != 0)
+{
+    @section Scripts {
 
 
-@section Scripts {
+
+
 
     <script>
+        let greenPin = @Model.GreenPin;
+        let redPin = @Model.RedPin;
+
         // Avoid spamming repeated keydown while held
         const activeKeys = new Set();
 
         const map = [
-          { match: e => e.shiftKey && e.code === 'KeyG', pin: 17 },
-          { match: e => e.shiftKey && e.code === 'KeyA', pin: 22 },
-          { match: e => e.shiftKey && e.code === 'KeyR', pin: 27 },
+          { match: e => e.shiftKey && e.code === 'KeyG', pin: greenPin },
+          { match: e => e.shiftKey && e.code === 'KeyR', pin: redPin },
         ];
 
         document.addEventListener('keydown', e => {
@@ -93,12 +101,14 @@
         window.addEventListener('blur', () => {
           activeKeys.forEach(sig => {
             const code = sig.split('+')[0];
-            const m = map.find(x => `Key${x.pin === 17 ? 'G' : x.pin === 22 ? 'A' : 'R'}` === code);
+            const m = map.find(x => `Key${x.pin === greenPin ? 'G' : x.pin === redPin ? 'R'}` === code);
             if (m) htmx.ajax('POST', '/gpio/off', { values: { pin: m.pin } });
           });
           activeKeys.clear();
         });
     </script>
 
+
+    }
 
 }

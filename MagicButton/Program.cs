@@ -24,9 +24,10 @@ builder.Services.AddDbContext<MagicDbContext>(opt => opt.UseSqlite($"Data Source
 
 if (!isDebug())
 {
-   builder.Services.AddHostedService<BackgroundJobService>();
-}
 
+    builder.Services.AddHostedService<BackgroundJobService>();
+    builder.Services.AddSingleton<BackgroundJobService>();
+}
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -98,13 +99,13 @@ app.MapGet("/logs/download", (IConfiguration cfg) =>
     return Results.File(path, "text/plain", "magicbutton.log");
 });
 
-app.MapPost("/gpio/on", ([FromForm]int pin, IGpioService gpio) =>
+app.MapPost("/gpio/on", ([FromForm] int pin, IGpioService gpio) =>
 {
     gpio.Set(pin, true);
     return Results.NoContent();
 });
 
-app.MapPost("/gpio/off", ([FromForm]int pin, IGpioService gpio) =>
+app.MapPost("/gpio/off", ([FromForm] int pin, IGpioService gpio) =>
 {
     gpio.Set(pin, false);
     return Results.NoContent();

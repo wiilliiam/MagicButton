@@ -17,20 +17,7 @@ namespace MagicButton.Data
 
         protected override void OnModelCreating(ModelBuilder b)
         {
-            var json = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-            };
-
-            // JSON converters
-            var dictSS = new ValueConverter<Dictionary<string, string>, string>(
-                v => JsonSerializer.Serialize(v, json),
-                v => string.IsNullOrWhiteSpace(v) ? new() : JsonSerializer.Deserialize<Dictionary<string, string>>(v, json)!);
-
-            var dictSO = new ValueConverter<Dictionary<string, object>, string>(
-                v => JsonSerializer.Serialize(v, json),
-                v => string.IsNullOrWhiteSpace(v) ? new() : JsonSerializer.Deserialize<Dictionary<string, object>>(v, json)!);
+     
 
             // DeviceConfig
             var cfg = b.Entity<DeviceConfig>();
@@ -48,8 +35,6 @@ namespace MagicButton.Data
             act.HasKey(x => x.Id);
             act.HasIndex(x => new { x.DeviceConfigId, x.Kind }).IsUnique(); // 1 row per kind
             act.Property(x => x.Url).HasMaxLength(1000);
-            act.Property(x => x.Headers).HasConversion(dictSS);
-            act.Property(x => x.ExtraPayload).HasConversion(dictSO);
             act.HasOne(x => x.DeviceConfig).WithMany(x => x.Actions)
                .HasForeignKey(x => x.DeviceConfigId).OnDelete(DeleteBehavior.Cascade);
 

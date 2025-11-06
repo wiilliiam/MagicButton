@@ -57,16 +57,16 @@
             <div class="form-group">
                 
                 <label asp-for="ActionConfig.Headers" class="form-label">Headers (json)</label>
-                <textarea asp-for="ActionConfig.Headers" class="form-control small-mono" rows="5" ></textarea>
+                <textarea asp-for="ActionConfig.Headers" class="form-control small-mono" rows="2" ></textarea>
                 <span asp-validation-for="ActionConfig.Headers" class="text-danger"></span>
             </div>
             <div class="form-group">
                 
                 <label asp-for="ActionConfig.ExtraPayload" class="form-label">Payload (json)</label>
-                <textarea asp-for="ActionConfig.ExtraPayload" class="form-control small-mono" rows="5"></textarea>
+                <textarea asp-for="ActionConfig.ExtraPayload" class="form-control small-mono" rows="9"></textarea>
                 <span asp-validation-for="ActionConfig.ExtraPayload" class="text-danger"></span>
             </div>
-            <div class="form-group">
+@*             <div class="form-group">
                 
                 <label asp-for="ActionConfig.RetriesMaxAttempts" class="form-label">Max retries on failure</label>
                 <input asp-for="ActionConfig.RetriesMaxAttempts" class="form-control" />
@@ -83,7 +83,7 @@
                 <label asp-for="ActionConfig.RetriesJitter" class="form-label">Retries jitter</label>
                 <input asp-for="ActionConfig.RetriesJitter" class="form-control" />
                 <span asp-validation-for="ActionConfig.RetriesJitter" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
 
                 <button type="submit" class="btn btn-primary">

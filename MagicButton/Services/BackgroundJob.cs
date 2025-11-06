@@ -125,7 +125,7 @@ namespace MagicButton.Services
         }
 
 
-        private async Task HandleSinglePressAsync(DeviceConfig device, MagicDbContext db, CancellationToken ct)
+        public async Task HandleSinglePressAsync(DeviceConfig device, MagicDbContext db, CancellationToken ct)
         {
             var action = device.Actions.FirstOrDefault(a => a.Kind == PressKind.Single);
             RequestMethod method = (RequestMethod)action!.Method!;
@@ -160,6 +160,7 @@ namespace MagicButton.Services
                 {
                     var s = await resp.Content.ReadAsStringAsync(ct);
                     bodySnippet = s.Length > 500 ? s[..500] : s;
+                    _logger.LogWarning("API Test Response: " + bodySnippet);
                 }
             }
             catch (Exception ex)

@@ -11,8 +11,8 @@
         // If null/empty, fall back to device defaults
         public RequestMethod? Method { get; set; }
         public string? Url { get; set; }
-        public Dictionary<string, string>? Headers { get; set; }
-        public Dictionary<string, object>? ExtraPayload { get; set; }
+        public string? Headers { get; set; }
+        public string? ExtraPayload { get; set; }
         public int? RetriesMaxAttempts { get; set; }
         public int? RetriesBaseDelayMs { get; set; }
         public bool? RetriesJitter { get; set; }

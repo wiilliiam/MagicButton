@@ -1,4 +1,6 @@
 using MagicButton.Data;
+using MagicButton.Data.Models;
+using MagicButton.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +12,11 @@ namespace MagicButton.Pages
     {
 
         private readonly MagicDbContext _context;
-
-        public DiagnosticsModel(MagicDbContext context)
+        private readonly BackgroundJobService _bj;
+        public DiagnosticsModel(MagicDbContext context, BackgroundJobService bj)
         {                    
             _context = context;
+            _bj = bj;
         }
 
 
@@ -37,6 +40,20 @@ namespace MagicButton.Pages
             }
         }
 
+        public async Task OnGetApiTestAsync()
+        {
+
+            var device = await _context.DeviceConfigs.Include(x=>x.Actions).FirstOrDefaultAsync();
+            if (device != null)
+            {
+                // Log or perform actions with the device
+                Console.WriteLine($"API Test for Device ID: {device.DeviceId}");
+                await _bj.HandleSinglePressAsync(device, _context, CancellationToken.None);
+               
+            }
+
+            await OnGetAsync();
+        }
 
     }
 }

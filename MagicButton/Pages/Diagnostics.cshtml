@@ -14,101 +14,109 @@
 @Html.AntiForgeryToken()
 <div class="container py-4">
 
-    @if (Model.GreenPin != 0 || Model.RedPin != 0)
-    {
-        <div class="border rounded p-3">
-            <h5 class="mb-3">LED Test</h5>
-            <p>
-                Here you can test your LEDs are wired and working as expected.
-                The buttons are momentary and need to be held down you can also use the keyboard: 
-                <strong><code>Shift</code> <code>+</code> <code>R/G</code></strong>
-            </p>
+    <div class="border rounded p-3 mb-3">
+        <h5 class="mb-3">API Test</h5>
+        <p>
+            Here you can test your API call.
+            <a asp-page-handler="ApiTest" class="btn btn-primary">Send</a>
+        </p>
+    </div>
+       
+            @if (Model.GreenPin != 0 || Model.RedPin != 0)
+            {
+                <div class="border rounded p-3">
+                    <h5 class="mb-3">LED Test</h5>
+                    <p>
+                        Here you can test your LEDs are wired and working as expected.
+                        The buttons are momentary and need to be held down you can also use the keyboard:
+                        <strong><code>Shift</code> <code>+</code> <code>R/G</code></strong>
+                    </p>
 
-            <button class="btn btn-success btn-lg me-2"
-                    data-pin="@Model.GreenPin"
-                    hx-post="/gpio/on"
-                    hx-vals='js:{"pin": this.dataset.pin}'
-                    hx-trigger="mousedown, touchstart"
-                    hx-target="this"
-                    hx-swap="none"
-                    hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-                    hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-                    hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-                    title="Shift+G to toggle while held">
-                💡 Green (pin @Model.GreenPin)
-            </button>
+                    <button class="btn btn-success btn-lg me-2"
+                            data-pin="@Model.GreenPin"
+                            hx-post="/gpio/on"
+                            hx-vals='js:{"pin": this.dataset.pin}'
+                            hx-trigger="mousedown, touchstart"
+                            hx-target="this"
+                            hx-swap="none"
+                            hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                            hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                            hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                            title="Shift+G to toggle while held">
+                        💡 Green (pin @Model.GreenPin)
+                    </button>
 
-            <!-- Red on pin 27 -->
-            <button class="btn btn-danger btn-lg"
-                    data-pin="@Model.RedPin"
-                    hx-post="/gpio/on"
-                    hx-vals='js:{"pin": this.dataset.pin}'
-                    hx-trigger="mousedown, touchstart"
-                    hx-target="this"
-                    hx-swap="none"
-                    hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-                    hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-                    hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
-                    title="Shift+R to toggle while held">
-                💡 Red (pin @Model.RedPin)
-            </button>
-        </div>
-    }
+                    <!-- Red on pin 27 -->
+                    <button class="btn btn-danger btn-lg"
+                            data-pin="@Model.RedPin"
+                            hx-post="/gpio/on"
+                            hx-vals='js:{"pin": this.dataset.pin}'
+                            hx-trigger="mousedown, touchstart"
+                            hx-target="this"
+                            hx-swap="none"
+                            hx-on:mouseup="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                            hx-on:mouseleave="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                            hx-on:touchend="htmx.ajax('POST','/gpio/off',{values:{pin:this.dataset.pin}})"
+                            title="Shift+R to toggle while held">
+                        💡 Red (pin @Model.RedPin)
+                    </button>
+                </div>
+            }
 </div>
-@if (Model.GreenPin != 0 || Model.RedPin != 0)
-{
-    @section Scripts {
+        @if (Model.GreenPin != 0 || Model.RedPin != 0)
+        {
+            @section Scripts {
 
 
 
 
 
-    <script>
-        let greenPin = @Model.GreenPin;
-        let redPin = @Model.RedPin;
+            <script>
+                let greenPin = @Model.GreenPin;
+                let redPin = @Model.RedPin;
 
-        // Avoid spamming repeated keydown while held
-        const activeKeys = new Set();
+                // Avoid spamming repeated keydown while held
+                const activeKeys = new Set();
 
-        const map = [
-          { match: e => e.shiftKey && e.code === 'KeyG', pin: greenPin },
-          { match: e => e.shiftKey && e.code === 'KeyR', pin: redPin },
-        ];
+                const map = [
+                  { match: e => e.shiftKey && e.code === 'KeyG', pin: greenPin },
+                  { match: e => e.shiftKey && e.code === 'KeyR', pin: redPin },
+                ];
 
-        document.addEventListener('keydown', e => {
-          const m = map.find(x => x.match(e));
-          if (!m) return;
+                document.addEventListener('keydown', e => {
+                  const m = map.find(x => x.match(e));
+                  if (!m) return;
 
-          const keySig = `${e.code}+shift`;
-          if (activeKeys.has(keySig)) return; // already ON
-          activeKeys.add(keySig);
+                  const keySig = `${e.code}+shift`;
+                  if (activeKeys.has(keySig)) return; // already ON
+                  activeKeys.add(keySig);
 
-          htmx.ajax('POST', '/gpio/on', { values: { pin: m.pin } });
-        });
+                  htmx.ajax('POST', '/gpio/on', { values: { pin: m.pin } });
+                });
 
-        document.addEventListener('keyup', e => {
-          const m = map.find(x => x.match(e));
-          if (!m) return;
+                document.addEventListener('keyup', e => {
+                  const m = map.find(x => x.match(e));
+                  if (!m) return;
 
-          const keySig = `${e.code}+shift`;
-          if (!activeKeys.has(keySig)) return;
-          activeKeys.delete(keySig);
+                  const keySig = `${e.code}+shift`;
+                  if (!activeKeys.has(keySig)) return;
+                  activeKeys.delete(keySig);
 
-          htmx.ajax('POST', '/gpio/off', { values: { pin: m.pin } });
-        });
+                  htmx.ajax('POST', '/gpio/off', { values: { pin: m.pin } });
+                });
 
-        // Safety: turn everything off when page unloads
-        window.addEventListener('blur', () => {
-          activeKeys.forEach(sig => {
-            const code = sig.split('+')[0];
-            const m = map.find(x => `Key${x.pin === greenPin ? 'G' : x.pin === redPin ? 'R'}` === code);
-            if (m) htmx.ajax('POST', '/gpio/off', { values: { pin: m.pin } });
-          });
-          activeKeys.clear();
-        });
-    </script>
+                // Safety: turn everything off when page unloads
+                window.addEventListener('blur', () => {
+                  activeKeys.forEach(sig => {
+                    const code = sig.split('+')[0];
+                    const m = map.find(x => `Key${x.pin === greenPin ? 'G' : x.pin === redPin ? 'R'}` === code);
+                    if (m) htmx.ajax('POST', '/gpio/off', { values: { pin: m.pin } });
+                  });
+                  activeKeys.clear();
+                });
+            </script>
 
 
-    }
+        }
 
-}
+        }

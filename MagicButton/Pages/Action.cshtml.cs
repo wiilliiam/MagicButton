@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MagicButton.Data;
 using MagicButton.Data.Models;
+using System.Text.Json;
 
 namespace MagicButton.Pages
 {
@@ -32,9 +33,11 @@ namespace MagicButton.Pages
                 "DeviceId"
             );
         }
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        public async Task<IActionResult> OnGetAsync()
         {
             await PopulateDeviceConfigsAsync();
+            
+            var id = await _context.ActionConfigs.FirstOrDefaultAsync();
 
             if (id == null)
             {
@@ -47,10 +50,9 @@ namespace MagicButton.Pages
             }
 
             // EDIT mode
-            ActionConfig = await _context.ActionConfigs.FirstOrDefaultAsync(m => m.Id == id.Value);
+            ActionConfig = id;
 
-            if (ActionConfig == null)
-                return NotFound();
+      
 
 
             return Page();
@@ -73,6 +75,7 @@ namespace MagicButton.Pages
             {
                 if (ActionConfig.Id == Guid.Empty)
                     ActionConfig.Id = Guid.NewGuid();
+
 
                 _context.ActionConfigs.Add(ActionConfig);
             }
